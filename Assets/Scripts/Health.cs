@@ -15,7 +15,7 @@ public class Health : MonoBehaviour
     }
     public int GetHealth() => currentHealth;
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, ParticleSystem ps = null)
     {
         currentHealth -= amount;
         OnHealthChanged?.Invoke(currentHealth);
@@ -25,5 +25,28 @@ public class Health : MonoBehaviour
             currentHealth = 0;
             OnDeath?.Invoke();
         }
+
+        if (ps != null)
+        {
+            // ps...
+        }
+
+        sumarF(1, 1);
     }
+
+    int sumar(int a, int b)
+    {
+        return a + b;
+    }
+    float sumarF(int a, int b)
+    {
+        return a + b;
+    }
+
+    //public void TakeDamage(int amount, ParticleSystem ps)
+    //{
+    //    this.TakeDamage(amount);
+
+    //    ps.emissionRate = 10;
+    //}
 }

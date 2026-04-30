@@ -4,7 +4,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public abstract class Enemy : MonoBehaviour
 {
-    private NavMeshAgent agent;
+    protected NavMeshAgent agent;
     protected Transform player;
 
     [SerializeField] private float detectionRange = 1.0f;
