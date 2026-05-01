@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,12 +12,17 @@ public class Shoot : MonoBehaviour
     [SerializeField] private int ammo = 5;
 
     [SerializeField] private float fireRate = 2.0f;
-    float lastShotTime;
+    private float lastShotTime;
 
+    private LineRenderer lineRenderer;
+    [SerializeField] private float lineDuration = 0.1f;
+        
 
     private void Awake()
     {
         shootOrigin = this.transform;
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.enabled = false;
     }
 
     public void ShootRayCast()
@@ -26,11 +32,14 @@ public class Shoot : MonoBehaviour
             Ray ray = new Ray(shootOrigin.position, shootOrigin.forward);
             RaycastHit hit;
 
-            Debug.DrawRay(shootOrigin.position, shootOrigin.forward * shootRange, Color.red, 1f);
+            // Debug.DrawRay(shootOrigin.position, shootOrigin.forward * shootRange, Color.red, 1f);
 
-                Debug.Log("he disparado");
+            Vector3 endPoint = shootOrigin.position + shootOrigin.forward * shootRange;
+                
             if (Physics.Raycast(ray, out hit, shootRange))
             {
+                endPoint = hit.point;
+
                 // Le ha dado a algo
                 Health health = hit.collider.GetComponent<Health>();
                 if (health != null)
@@ -38,9 +47,23 @@ public class Shoot : MonoBehaviour
                     health.TakeDamage(shootDamage);
                 }
             }
-            ammo--;
 
+            StartCoroutine(ShowLine(shootOrigin.position, endPoint));
+
+            ammo--;
             lastShotTime = Time.time;
         }
     }
+
+    IEnumerator ShowLine(Vector3 start, Vector3 end)
+    {
+        lineRenderer.SetPosition(0, start);
+        lineRenderer.SetPosition(1, end);
+        lineRenderer.enabled = true;
+
+        yield return new WaitForSeconds(lineDuration);
+
+        lineRenderer.enabled = false;
+    }
+
 }
