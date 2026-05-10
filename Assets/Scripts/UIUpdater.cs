@@ -6,24 +6,29 @@ public class UIUpdater : MonoBehaviour
     [SerializeField] private TextMeshProUGUI coinText;
     [SerializeField] private TextMeshProUGUI healthText;
 
-    private Health playerHealth;
+    [SerializeField] private Health playerHealth;
 
     private void Start()
     {
         coinText.text = GameManager.Instance.GetCoinCount().ToString();
         GameManager.Instance.OnCoinChanged += UpdateUI;
 
-        PlayerController player = FindAnyObjectByType<PlayerController>();
-        if (player != null )
+        if (playerHealth == null)
         {
-            playerHealth = player.gameObject.GetComponent<Health>();
-            if ( playerHealth != null )
+            PlayerController player = FindAnyObjectByType<PlayerController>();
+            if (player != null)
             {
-                healthText.text = playerHealth.GetHealth().ToString();
-                playerHealth.OnHealthChanged += UpdateHealth;
-
+                playerHealth = player.gameObject.GetComponent<Health>();
             }
         }
+
+        if (playerHealth != null)
+        {
+            healthText.text = playerHealth.GetHealth().ToString();
+            playerHealth.OnHealthChanged += UpdateHealth;
+
+        }
+
     }
     private void OnDestroy()
     {

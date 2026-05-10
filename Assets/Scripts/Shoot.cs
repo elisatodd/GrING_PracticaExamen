@@ -9,25 +9,28 @@ public class Shoot : MonoBehaviour
     [SerializeField] private float shootRange = 50.0f;
     [SerializeField] private int shootDamage = 2;
 
-    [SerializeField] private int ammo = 5;
+    [SerializeField] private int initialAmmo = 5;
+    private int currentAmmo;
 
-    [SerializeField] private float fireRate = 2.0f;
+    [SerializeField] private float fireRate = 5.0f;
     private float lastShotTime;
 
     private LineRenderer lineRenderer;
     [SerializeField] private float lineDuration = 0.1f;
-        
+
 
     private void Awake()
     {
         shootOrigin = this.transform;
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
+        currentAmmo = initialAmmo;
+        lastShotTime = 0;
     }
 
     public void ShootRayCast()
     {
-        if (ammo > 0 && (lastShotTime + fireRate <= Time.time))
+        if (currentAmmo > 0 && ((lastShotTime == 0) || lastShotTime + fireRate <= Time.time))
         {
             Ray ray = new Ray(shootOrigin.position, shootOrigin.forward);
             RaycastHit hit;
@@ -50,7 +53,7 @@ public class Shoot : MonoBehaviour
 
             StartCoroutine(ShowLine(shootOrigin.position, endPoint));
 
-            ammo--;
+            currentAmmo--;
             lastShotTime = Time.time;
         }
     }
